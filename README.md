@@ -1,6 +1,6 @@
 # 🦙 ALPAKA NOTES v2.0 - Ultimate TUI Edition
 
-**Najpiękniejsza** aplikacja do notatek w terminalu! Stworzona z ❤️ używając Charm Bracelet Bubble Tea.
+**The most beautiful** note-taking application for your terminal! Built with ❤️ using Charm Bracelet Bubble Tea.
 
 ```
    ▄▄▄       ██▓     ██▓███   ▄▄▄       ██ ▄█▀▄▄▄      
@@ -10,144 +10,150 @@
    ▓█   ▓██▒░██████▒▒██▒ ░  ░ ▓█   ▓██▒▒██▒ █▄▓█   ▓██▒
 ```
 
-## ✨ Cechy Premium
+[![Go Version](https://img.shields.io/badge/Go-1.18+-00ADD8?style=flat&logo=go)](https://golang.org)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey)](https://github.com)
 
-### 🎨 **Piękny Interfejs**
-- Gradient kolorów i animacje
+## ✨ Premium Features
+
+### 🎨 **Beautiful Interface**
+- Gradient colors and animations
 - ASCII art logo
-- Animowany splash screen
-- Responsywny layout
-- Kolorowe tagi i ikony
-- Migający kursor
+- Animated splash screen
+- Responsive layout
+- Colorful tags and icons
+- Blinking cursor animations
 
-### 🔐 **Bezpieczeństwo**
-- Szyfrowanie AES (wkrótce)
-- Hash hasła SHA-256
-- Własny format `.alpaka`
-- Brak przechowywania hasła
-- Pokaż/ukryj hasło (Ctrl+H)
+### 🔐 **Security**
+- Password-protected encryption
+- SHA-256 password hashing
+- Custom `.alpaka` file format
+- No password storage
+- Show/hide password toggle (Ctrl+H)
 
-### 📝 **Funkcje Notatek**
-- Nieograniczona liczba notatek
-- Wiele linii w treści
-- System tagów
-- Liczniki znaków
-- Automatyczne timestampy
-- Wyszukiwanie w czasie rzeczywistym
+### 📝 **Note Features**
+- Unlimited notes
+- Multi-line content support
+- Tag system
+- Character counters
+- Automatic timestamps
+- Real-time search
 
-### 📊 **Statystyki i Analiza**
-- Liczba notatek, słów, tagów
-- Średnia słów na notatkę
-- Tag cloud
-- Ostatnia aktywność
-- Wykresy użycia
+### 📊 **Statistics & Analytics**
+- Note, word, and tag counts
+- Average words per note
+- Tag cloud visualization
+- Recent activity tracking
+- Usage charts
 
-### 🎯 **3 Tryby Widoku**
-1. **Lista** - Szczegółowy podgląd wszystkich notatek
-2. **Siatka** - Kompaktowy widok 2 kolumny
-3. **Podgląd** - Pełny widok pojedynczej notatki
+### 🎯 **3 View Modes**
+1. **List** - Detailed preview of all notes
+2. **Grid** - Compact 2-column view
+3. **Preview** - Full view of single note
 
-### 🔄 **3 Tryby Sortowania**
-- Po dacie (najnowsze pierwsze)
-- Po tytule (alfabetycznie)
-- Po tagach
+### 🔄 **3 Sorting Modes**
+- By date (newest first)
+- By title (alphabetically)
+- By tags
 
-## 🚀 Instalacja
+## 🚀 Quick Start
 
-### Wymagania
-- Go 1.18+ (zalecane 1.21+)
+### Installation
 
-### Szybki start
+#### Option 1: Download Pre-built Binary (Easiest)
+
+Download the latest release for your platform:
+- **Linux**: `alpaka-linux-amd64`
+- **Windows**: `alpaka-windows-amd64.exe`
+- **macOS Intel**: `alpaka-macos-intel`
+- **macOS Apple Silicon**: `alpaka-macos-m1`
 
 ```bash
-# Sklonuj lub utwórz katalog
+# Linux/macOS
+chmod +x alpaka-linux-amd64
+./alpaka-linux-amd64
+
+# Windows
+# Double-click alpaka-windows-amd64.exe
+```
+
+#### Option 2: Build from Source
+
+**Requirements:**
+- Go 1.18+ (recommended 1.21+)
+
+```bash
+# Clone or create directory
 mkdir alpaka-notes && cd alpaka-notes
 
-# Skopiuj pliki: main.go, screens.go, notebook.go
+# Copy files: main.go, screens.go, notebook.go, go.mod
 
-# Inicjalizuj moduł
-go mod init github.com/alpaka/notes
+# Install dependencies
+go mod tidy
 
-# Pobierz zależności
-go get github.com/charmbracelet/bubbletea@v0.23.2
-go get github.com/charmbracelet/lipgloss@v0.7.1
-
-# Uruchom!
+# Run!
 go run .
 ```
 
-### Kompilacja
+## 🎮 Controls
 
-```bash
-# Linux
-go build -o alpaka
+### Global
+- **Ctrl+C** - Exit application
+- **Esc** - Return to main menu
+- **↑/↓** or **j/k** - Navigate (Vim keys!)
 
-# Windows
-GOOS=windows GOARCH=amd64 go build -o alpaka.exe
+### Login Screen
+- Type password
+- **Ctrl+H** - Show/hide password
+- **Enter** - Login
 
-# macOS
-GOOS=darwin GOARCH=amd64 go build -o alpaka-mac
-```
+### Main Menu
+- **↑/↓** or **j/k** - Select option
+- **Enter** - Confirm
+- **q** - Quit
 
-## 🎮 Sterowanie
+### Add Note
+- **Tab** - Next field
+- **Shift+Tab** - Previous field
+- **Enter** - New line (in content)
+- **Ctrl+S** - Save note
+- **Esc** - Cancel
 
-### Globalne
-- **Ctrl+C** - Wyjście z aplikacji
-- **Esc** - Powrót do menu głównego
-- **↑/↓** lub **j/k** - Nawigacja (Vim keys!)
+### Browse Notes
+- **↑/↓** or **j/k** - Scroll
+- **d** - Delete note
+- **v** - Change view (List/Grid/Preview)
+- **s** - Change sorting
+- **Esc** - Return
 
-### Ekran logowania
-- Wpisz hasło
-- **Ctrl+H** - Pokaż/ukryj hasło
-- **Enter** - Zaloguj
+### Search
+- Type query
+- Real-time results
+- **Esc** - Return
 
-### Menu główne
-- **↑/↓** lub **j/k** - Wybór opcji
-- **Enter** - Potwierdź
-- **q** - Wyjście
+### Statistics
+- Browse data
+- **Esc** - Return
 
-### Dodawanie notatki
-- **Tab** - Następne pole
-- **Shift+Tab** - Poprzednie pole
-- **Enter** - Nowa linia (w treści)
-- **Ctrl+S** - Zapisz notatkę
-- **Esc** - Anuluj
+### Settings
+- **↑/↓** - Select option
+- **Enter/Space** - Change setting
+- **Esc** - Return
 
-### Przeglądanie notatek
-- **↑/↓** lub **j/k** - Przewijanie
-- **d** - Usuń notatkę
-- **v** - Zmień widok (Lista/Siatka/Podgląd)
-- **s** - Zmień sortowanie
-- **Esc** - Powrót
-
-### Wyszukiwanie
-- Wpisz zapytanie
-- Wyniki w czasie rzeczywistym
-- **Esc** - Powrót
-
-### Statystyki
-- Przeglądaj dane
-- **Esc** - Powrót
-
-### Ustawienia
-- **↑/↓** - Wybór opcji
-- **Enter/Space** - Zmień ustawienie
-- **Esc** - Powrót
-
-## 📁 Struktura projektu
+## 📁 Project Structure
 
 ```
 alpaka-notes/
-├── main.go          # Główna aplikacja + style
-├── screens.go       # Wszystkie ekrany (Login, Menu, etc.)
-├── notebook.go      # Model danych + szyfrowanie
-├── go.mod           # Zależności
+├── main.go          # Main application + styles
+├── screens.go       # All screens (Login, Menu, etc.)
+├── notebook.go      # Data model + encryption
+├── go.mod           # Dependencies
 ├── go.sum           # Checksums
-├── README.md        # Ta dokumentacja
-└── notatki.alpaka   # Twoje zaszyfrowane notatki
+├── README.md        # This documentation
+└── notatki.alpaka   # Your encrypted notes
 ```
 
-## 🎨 Paleta kolorów
+## 🎨 Color Palette
 
 ```
 Pink:    #FF6B9D  - Primary
@@ -160,7 +166,7 @@ Orange:  #F78C6C  - Highlight
 Red:     #FF5370  - Danger
 ```
 
-## 📦 Format pliku .alpaka
+## 📦 .alpaka File Format
 
 ```
 ALPAKA
@@ -170,74 +176,150 @@ HASH:<sha256_password_hash>
 <encrypted_json_data>
 ```
 
-## 🔒 Bezpieczeństwo
+## 🔨 Building
 
-**Obecna implementacja:**
-- XOR cipher (demonstracja)
-- SHA-256 hash hasła
+### Cross-platform compilation
+
+```bash
+# All platforms
+chmod +x build.sh
+./build.sh
+
+# Or use Makefile
+make all-platforms
+
+# Individual platforms
+make linux
+make windows
+make macos
+```
+
+### Manual build
+
+```bash
+# Linux
+GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o alpaka-linux-amd64
+
+# Windows
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o alpaka-windows-amd64.exe
+
+# macOS Intel
+GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o alpaka-macos-intel
+
+# macOS Apple Silicon
+GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o alpaka-macos-m1
+```
+
+## 🔒 Security
+
+**Current implementation:**
+- XOR cipher (demonstration)
+- SHA-256 password hash
 - JSON serialization
 
-**Planowane ulepszenia:**
+**Planned improvements:**
 - [ ] AES-256-GCM encryption
 - [ ] PBKDF2/Argon2 key derivation
 - [ ] Salt generation
-- [ ] Backup encryption
+- [ ] Encrypted backups
 
 ## 🎯 Roadmap
 
 ### v2.1
-- [ ] Eksport do Markdown/PDF
-- [ ] Import z innych formatów
-- [ ] Kategorie/foldery
-- [ ] Przypięte notatki
-- [ ] Archiwum
+- [ ] Export to Markdown/PDF
+- [ ] Import from other formats
+- [ ] Categories/folders
+- [ ] Pinned notes
+- [ ] Archive
 
 ### v2.2
-- [ ] Załączniki do notatek
-- [ ] Obrazy inline
+- [ ] Note attachments
+- [ ] Inline images
 - [ ] Markdown rendering
 - [ ] Syntax highlighting
-- [ ] Motywy kolorystyczne
+- [ ] Color themes
 
 ### v3.0
-- [ ] Synchronizacja (opcjonalna)
-- [ ] Współdzielenie notatek
+- [ ] Cloud sync (optional)
+- [ ] Note sharing
 - [ ] Web interface
 - [ ] Mobile app
-- [ ] Wtyczki
+- [ ] Plugins
 
-## 🏆 Funkcje Premium
+## 🏆 Premium Features Included
 
-✅ **Animowany splash screen** z gradientami  
-✅ **5 ekranów** (Login, Menu, Dodaj, Przeglądaj, Statystyki, Ustawienia, Szukaj)  
-✅ **ASCII art** logo z gradientem  
-✅ **Migający kursor** we wszystkich polach  
-✅ **Kolorowe tagi** (5 kolorów rotacyjnie)  
-✅ **3 tryby widoku** notatek  
-✅ **3 tryby sortowania**  
-✅ **Statystyki** z licznikami i wykresami  
-✅ **Wyszukiwanie** w czasie rzeczywistym  
-✅ **Liczniki znaków** w formularzach  
-✅ **Progress bar** przy ładowaniu  
-✅ **Statusy** (Success/Error/Warning/Info)  
+✅ **Animated splash screen** with gradients  
+✅ **7 screens** (Splash, Login, Menu, Add, Browse, Search, Stats, Settings)  
+✅ **ASCII art logo** with gradient  
+✅ **Blinking cursor** in all input fields  
+✅ **Colorful tags** (5 colors rotating)  
+✅ **3 view modes** for notes  
+✅ **3 sorting modes**  
+✅ **Statistics** with counters and charts  
+✅ **Real-time search**  
+✅ **Character counters** in forms  
+✅ **Progress bar** on loading  
+✅ **Status messages** (Success/Error/Warning/Info)  
 ✅ **Vim keybindings** (j/k)  
-✅ **Responsywny** layout  
+✅ **Responsive** layout  
 
-## 📚 Biblioteki
+## 📚 Libraries
 
 - [Bubble Tea](https://github.com/charmbracelet/bubbletea) - TUI Framework
 - [Lipgloss](https://github.com/charmbracelet/lipgloss) - Style & Layout
 
-## 🤝 Wkład
+## 🌟 Screenshots
 
-Chcesz pomóc? Świetnie!
+```
+╔═══════════════════════════════════════════════╗
+║          🦙 ALPAKA NOTES v2.0 🦙             ║
+║       Ultimate TUI Experience Edition        ║
+╚═══════════════════════════════════════════════╝
 
-1. Fork projektu
-2. Stwórz branch (`git checkout -b feature/amazing`)
-3. Commit (`git commit -m 'Add amazing feature'`)
-4. Push (`git push origin feature/amazing`)
-5. Pull Request
+📊 Statistics: 42 notes | File: notatki.alpaka
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 📄 Licencja
+  ▶ 📝  New Note          - Create new entry
+    📖  Browse             - View all notes
+    🔍  Search             - Find notes
+    📊  Statistics         - Analytics and charts
+    ⚙️   Settings          - Sorting and views
+    💾  Save               - Save changes to disk
+    🚪  Exit               - Close program
+```
 
-MIT License
+## 🤝 Contributing
+
+Want to help? Great!
+
+1. Fork the project
+2. Create a branch (`git checkout -b feature/amazing`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing`)
+5. Open a Pull Request
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) file for details
+
+## 🙏 Acknowledgments
+
+- [Charm Bracelet](https://charm.sh/) - For amazing TUI tools
+- All contributors and users
+- The Go community
+
+## 📞 Support
+
+- 🐛 **Bug reports**: [Open an issue](https://github.com/yourusername/alpaka-notes/issues)
+- 💡 **Feature requests**: [Open an issue](https://github.com/yourusername/alpaka-notes/issues)
+- ❓ **Questions**: [Discussions](https://github.com/yourusername/alpaka-notes/discussions)
+
+## ⭐ Star History
+
+If you like this project, please give it a star! ⭐
+
+---
+
+**Made with ❤️ and 🦙 by Alpaka Inc.**
+
+*Secure • Beautiful • Fast*
