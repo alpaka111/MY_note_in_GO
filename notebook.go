@@ -208,25 +208,25 @@ func LoadNotebook(filename, password string) (*Notebook, error) {
 	// Parse header
 	lines := strings.Split(string(data), "\n")
 	if len(lines) < 4 || lines[0] != "ALPAKA" {
-		return nil, fmt.Errorf("nieprawidłowy format pliku")
+		return nil, fmt.Errorf("invalid file format")
 	}
 
 	// Extract password hash
 	hashLine := lines[2]
 	if !strings.HasPrefix(hashLine, "HASH:") {
-		return nil, fmt.Errorf("brak hash hasła")
+		return nil, fmt.Errorf("missing password hash")
 	}
 	storedHash := hashLine[5:]
 
 	// Verify password
 	if hashPassword(password) != storedHash {
-		return nil, fmt.Errorf("nieprawidłowe hasło")
+		return nil, fmt.Errorf("invalid password")
 	}
 
 	// Find encrypted data start
 	encryptedStart := strings.Index(string(data), "---ENCRYPTED---\n") + 16
 	if encryptedStart == 15 {
-		return nil, fmt.Errorf("brak zaszyfrowanych danych")
+		return nil, fmt.Errorf("missing encrypted data")
 	}
 
 	encrypted := data[encryptedStart:]
@@ -237,7 +237,7 @@ func LoadNotebook(filename, password string) (*Notebook, error) {
 	// Deserialize JSON
 	var notes []Note
 	if err := json.Unmarshal(decrypted, &notes); err != nil {
-		return nil, fmt.Errorf("błąd deszyfrowania: %v", err)
+		return nil, fmt.Errorf("decryption error: %v", err)
 	}
 
 	return &Notebook{
