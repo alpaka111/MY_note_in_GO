@@ -35,13 +35,12 @@ func (m model) viewSplash() string {
     ║          🦙 ALPAKA NOTES v2.0 🦙             ║
     ║       Ultimate TUI Experience Edition        ║
     ║                                               ║
-    ║         Bezpieczny • Piękny • Szybki         ║
+    ║         Secure • Beautiful • Fast            ║
     ║                                               ║
     ╚═══════════════════════════════════════════════╝
     `
 
 	gradientTitle := renderGradientText(title, colorPalette)
-
 	loadingBar := renderProgressBar(m.splashTicks, 20, 40)
 
 	var b strings.Builder
@@ -64,7 +63,7 @@ func (m model) viewSplash() string {
 		Italic(true).
 		Align(lipgloss.Center).
 		Width(80).
-		Render("Przygotowywanie środowiska..."))
+		Render("Preparing environment..."))
 
 	return lipgloss.Place(m.width, m.height,
 		lipgloss.Center, lipgloss.Center,
@@ -76,16 +75,16 @@ func (m model) updateLogin(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
 	case "enter":
 		if len(m.passwordBuf) == 0 {
-			m.err = fmt.Errorf("Hasło nie może być puste")
+			m.err = fmt.Errorf("password cannot be empty")
 			return m, nil
 		}
 
 		notebook, err := LoadNotebook(m.filename, m.passwordBuf)
 		if err != nil {
 			notebook = NewNotebook(m.filename, m.passwordBuf)
-			m.success = "Utworzono nowy pamiętnik!"
+			m.success = "New notebook created!"
 		} else {
-			m.success = fmt.Sprintf("Załadowano %d notatek!", len(notebook.Notes))
+			m.success = fmt.Sprintf("Loaded %d notes!", len(notebook.Notes))
 		}
 
 		m.notebook = notebook
@@ -111,18 +110,18 @@ func (m model) updateLogin(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m model) viewLogin() string {
 	var b strings.Builder
 
-	b.WriteString(renderHeader("WITAJ W ALPAKA NOTES", "Twój prywatny, zaszyfrowany pamiętnik"))
+	b.WriteString(renderHeader("WELCOME TO ALPAKA NOTES", "Your private, encrypted notebook"))
 	b.WriteString("\n\n")
 
-	// Info card
 	infoCard := glowBoxStyle.
 		Width(70).
-		Render(infoStyle.Render("ℹ Pierwsze uruchomienie? Ustaw nowe hasło!\nKolejne uruchomienie? Podaj swoje hasło."))
+		Render(infoStyle.Render(
+			"ℹ First launch? Set a new password.\nReturning user? Enter your password.",
+		))
 	b.WriteString(infoCard)
 	b.WriteString("\n\n")
 
-	// Password box
-	passwordLabel := focusedLabelStyle.Render("🔐 Hasło:")
+	passwordLabel := focusedLabelStyle.Render("🔐 Password:")
 	b.WriteString(passwordLabel)
 	b.WriteString("\n")
 
@@ -134,7 +133,9 @@ func (m model) viewLogin() string {
 	}
 
 	if len(m.passwordBuf) == 0 {
-		passwordDisplay = lipgloss.NewStyle().Foreground(muted).Render("Wpisz hasło...")
+		passwordDisplay = lipgloss.NewStyle().
+			Foreground(muted).
+			Render("Enter password...")
 	}
 	passwordDisplay += getAnimatedCursor(m.animFrame)
 
@@ -142,11 +143,13 @@ func (m model) viewLogin() string {
 	b.WriteString(passwordBox)
 	b.WriteString("\n")
 
-	// Show/hide toggle
 	toggleHint := lipgloss.NewStyle().
 		Foreground(muted).
 		Italic(true).
-		Render(fmt.Sprintf("Ctrl+H - %s hasło", map[bool]string{true: "ukryj", false: "pokaż"}[m.showPassword]))
+		Render(fmt.Sprintf(
+			"Ctrl+H - %s password",
+			map[bool]string{true: "hide", false: "show"}[m.showPassword],
+		))
 	b.WriteString(toggleHint)
 	b.WriteString("\n\n")
 
@@ -155,17 +158,20 @@ func (m model) viewLogin() string {
 		b.WriteString("\n\n")
 	}
 
-	// Security info
 	securityInfo := boxStyle.
 		Width(70).
 		BorderForeground(success).
-		Render("🔒 Twoje dane są chronione szyfrowaniem AES\n🔐 Hasło nie jest przechowywane\n✅ Format .alpaka - tylko dla Twoich oczu")
+		Render(
+			"🔒 Your data is protected with AES encryption\n" +
+				"🔐 Password is never stored\n" +
+				"✅ .alpaka format — for your eyes only",
+		)
 	b.WriteString(securityInfo)
 
 	b.WriteString(renderFooter(renderHelp(
-		"Enter", "Zaloguj",
-		"Ctrl+H", "Pokaż/Ukryj",
-		"Ctrl+C", "Wyjdź",
+		"Enter", "Login",
+		"Ctrl+H", "Show/Hide",
+		"Ctrl+C", "Quit",
 	)))
 
 	return lipgloss.Place(m.width, m.height,
@@ -209,7 +215,7 @@ func (m model) updateMenu(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			if err := m.notebook.Save(); err != nil {
 				m.err = err
 			} else {
-				m.success = "Zapisano pomyślnie!"
+				m.success = "Saved successfully!"
 			}
 		case 6:
 			return m, tea.Quit
@@ -221,20 +227,20 @@ func (m model) updateMenu(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m model) viewMenu() string {
 	var b strings.Builder
 
-	b.WriteString(renderHeader("MENU GŁÓWNE", "Wybierz akcję"))
+	b.WriteString(renderHeader("Main Menu", "Cheack out your options below"))
 	b.WriteString("\n")
 
 	// Stats dashboard
 	statsRow := lipgloss.JoinHorizontal(lipgloss.Top,
 		statCardStyle.Render(
 			statNumberStyle.Render(fmt.Sprintf("%d", len(m.notebook.Notes)))+"\n"+
-				statLabelStyle.Render("📝 Notatek")),
+				statLabelStyle.Render("📝 Notes")),
 		statCardStyle.Render(
 			statNumberStyle.Render(fmt.Sprintf("%d", m.notebook.CountTags()))+"\n"+
-				statLabelStyle.Render("🏷️  Tagów")),
+				statLabelStyle.Render("🏷️  Tags")),
 		statCardStyle.Render(
 			statNumberStyle.Render(fmt.Sprintf("%d", m.notebook.CountWords()))+"\n"+
-				statLabelStyle.Render("📊 Słów")),
+				statLabelStyle.Render("📊 Words")),
 	)
 	b.WriteString(lipgloss.NewStyle().
 		Align(lipgloss.Center).
@@ -247,7 +253,7 @@ func (m model) viewMenu() string {
 		Width(70).
 		BorderForeground(accent).
 		Align(lipgloss.Center).
-		Render(fmt.Sprintf("📁 Plik: %s │ 🔐 Zaszyfrowano", m.filename))
+		Render(fmt.Sprintf("📁 File: %s │ 🔐 Encrypted", m.filename))
 	b.WriteString(fileInfo)
 	b.WriteString("\n\n")
 
@@ -257,13 +263,13 @@ func (m model) viewMenu() string {
 		text string
 		desc string
 	}{
-		{"📝", "Nowa Notatka", "Stwórz nowy wpis"},
-		{"📖", "Przeglądaj", "Zobacz wszystkie notatki"},
-		{"🔍", "Wyszukaj", "Znajdź notatki"},
-		{"📊", "Statystyki", "Analiza i wykresy"},
-		{"⚙️ ", "Ustawienia", "Sortowanie i widoki"},
-		{"💾", "Zapisz", "Zapisz zmiany na dysk"},
-		{"🚪", "Wyjście", "Zamknij program"},
+		{"📝", "New Note", "Create a new note"},
+		{"📖", "View Notes", "Browse all notes"},
+		{"🔍", "Search", "Find specific notes"},
+		{"📊", "Statistics", "Analyze and visualize data"},
+		{"⚙️ ", "Settings", "Sorting and viewing options"},
+		{"💾", "Save", "Save changes to disk"},
+		{"🚪", "Exit", "Close the program"},
 	}
 
 	for i, item := range menuItems {
@@ -291,10 +297,10 @@ func (m model) viewMenu() string {
 	}
 
 	b.WriteString(renderFooter(renderHelp(
-		"↑/↓", "Nawiguj",
+		"↑/↓", "Navigate",
 		"j/k", "Vim",
-		"Enter", "Wybierz",
-		"q", "Wyjdź",
+		"Enter", "Select",
+		"q", "Quit",
 	)))
 
 	return lipgloss.Place(m.width, m.height,
@@ -307,7 +313,7 @@ func (m model) updateAddNote(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
 	case "ctrl+s":
 		if len(m.titleBuf) == 0 {
-			m.err = fmt.Errorf("Tytuł nie może być pusty")
+			m.err = fmt.Errorf("Title cannot be empty")
 			return m, nil
 		}
 
@@ -320,7 +326,7 @@ func (m model) updateAddNote(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.notebook.AddNote(note)
 
 		m.screen = screenMenu
-		m.success = "Notatka dodana pomyślnie!"
+		m.success = "Note added successfully!"
 		m.cursor = 0
 		return m, nil
 
@@ -375,7 +381,7 @@ func (m model) updateAddNote(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m model) viewAddNote() string {
 	var b strings.Builder
 
-	b.WriteString(renderHeader("NOWA NOTATKA", "Podziel się swoimi myślami"))
+	b.WriteString(renderHeader("NEW NOTE", "Share your thoughts"))
 	b.WriteString("\n")
 
 	// Character counters
@@ -384,9 +390,9 @@ func (m model) viewAddNote() string {
 	tagsCounter := fmt.Sprintf("%d/200", len(m.tagsBuf))
 
 	// Title field
-	titleLabel := labelStyle.Render("📌 Tytuł:")
+	titleLabel := labelStyle.Render("📌 Title:")
 	if m.cursor == 0 {
-		titleLabel = focusedLabelStyle.Render("📌 Tytuł:")
+		titleLabel = focusedLabelStyle.Render("📌 Title:")
 	}
 	titleLabel += lipgloss.NewStyle().Foreground(muted).Render(" " + titleCounter)
 	b.WriteString(titleLabel)
@@ -394,7 +400,7 @@ func (m model) viewAddNote() string {
 
 	titleContent := m.titleBuf
 	if len(titleContent) == 0 && m.cursor != 0 {
-		titleContent = lipgloss.NewStyle().Foreground(muted).Render("Wpisz krótki, opisowy tytuł...")
+		titleContent = lipgloss.NewStyle().Foreground(muted).Render("Enter a short, descriptive title...")
 	}
 	if m.cursor == 0 {
 		titleContent += getAnimatedCursor(m.animFrame)
@@ -410,9 +416,9 @@ func (m model) viewAddNote() string {
 	b.WriteString("\n")
 
 	// Content field
-	contentLabel := labelStyle.Render("📄 Treść:")
+	contentLabel := labelStyle.Render("📄 Content:")
 	if m.cursor == 1 {
-		contentLabel = focusedLabelStyle.Render("📄 Treść:")
+		contentLabel = focusedLabelStyle.Render("📄 Content:")
 	}
 	contentLabel += lipgloss.NewStyle().Foreground(muted).Render(" " + contentCounter)
 	b.WriteString(contentLabel)
@@ -420,7 +426,7 @@ func (m model) viewAddNote() string {
 
 	contentContent := m.contentBuf
 	if len(contentContent) == 0 && m.cursor != 1 {
-		contentContent = lipgloss.NewStyle().Foreground(muted).Render("Zapisz swoje myśli, pomysły, wspomnienia...")
+		contentContent = lipgloss.NewStyle().Foreground(muted).Render("Write your thoughts, ideas, memories...")
 	}
 	if m.cursor == 1 {
 		contentContent += getAnimatedCursor(m.animFrame)
@@ -436,9 +442,9 @@ func (m model) viewAddNote() string {
 	b.WriteString("\n")
 
 	// Tags field
-	tagsLabel := labelStyle.Render("🏷️  Tagi:")
+	tagsLabel := labelStyle.Render("🏷️  Tags:")
 	if m.cursor == 2 {
-		tagsLabel = focusedLabelStyle.Render("🏷️  Tagi:")
+		tagsLabel = focusedLabelStyle.Render("🏷️  Tags:")
 	}
 	tagsLabel += lipgloss.NewStyle().Foreground(muted).Render(" " + tagsCounter)
 	b.WriteString(tagsLabel)
@@ -446,7 +452,7 @@ func (m model) viewAddNote() string {
 
 	tagsContent := m.tagsBuf
 	if len(tagsContent) == 0 && m.cursor != 2 {
-		tagsContent = lipgloss.NewStyle().Foreground(muted).Render("praca osobiste ważne pomysł...")
+		tagsContent = lipgloss.NewStyle().Foreground(muted).Render("work personal important idea...")
 	}
 	if m.cursor == 2 {
 		tagsContent += getAnimatedCursor(m.animFrame)
@@ -467,10 +473,10 @@ func (m model) viewAddNote() string {
 	}
 
 	b.WriteString(renderFooter(renderHelp(
-		"Tab", "Następne",
-		"Enter", "Nowa linia",
-		"Ctrl+S", "Zapisz",
-		"Esc", "Anuluj",
+		"Tab", "Next",
+		"Enter", "New line",
+		"Ctrl+S", "Save",
+		"Esc", "Cancel",
 	)))
 
 	return lipgloss.Place(m.width, m.height,
@@ -495,7 +501,7 @@ func (m model) updateViewNotes(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			if m.selected >= len(m.notebook.Notes) && m.selected > 0 {
 				m.selected--
 			}
-			m.success = "Notatka usunięta"
+			m.success = "Note deleted"
 		}
 	case "v":
 		m.viewMode = (m.viewMode + 1) % 3
@@ -510,18 +516,18 @@ func (m model) viewViewNotes() string {
 	var b strings.Builder
 
 	sortModeText := map[sortMode]string{
-		sortByDate:  "Data",
-		sortByTitle: "Tytuł",
-		sortByTags:  "Tagi",
+		sortByDate:  "Date",
+		sortByTitle: "Title",
+		sortByTags:  "Tags",
 	}[m.sortMode]
 
 	viewModeText := map[int]string{
-		0: "Lista",
-		1: "Siatka",
-		2: "Szczegóły",
+		0: "List",
+		1: "Grid",
+		2: "Details",
 	}[m.viewMode]
 
-	b.WriteString(renderHeader("PRZEGLĄDAJ NOTATKI",
+	b.WriteString(renderHeader("VIEW NOTES",
 		fmt.Sprintf("Sortowanie: %s │ Widok: %s", sortModeText, viewModeText)))
 	b.WriteString("\n")
 
@@ -529,7 +535,7 @@ func (m model) viewViewNotes() string {
 		emptyCard := glowBoxStyle.
 			Width(70).
 			Align(lipgloss.Center).
-			Render("📭 Brak notatek\n\n✨ Dodaj pierwszą notatkę aby rozpocząć!\n\nNaciśnij Esc i wybierz 'Nowa Notatka'")
+			Render("📭 No notes\n\n✨ Add your first note to get started!\n\nPress Esc and select 'New Note'")
 		b.WriteString(emptyCard)
 	} else {
 		// View modes
@@ -564,11 +570,11 @@ func (m model) viewViewNotes() string {
 	}
 
 	b.WriteString(renderFooter(renderHelp(
-		"↑/↓", "Przewijaj",
-		"d", "Usuń",
-		"v", "Zmień widok",
-		"s", "Sortuj",
-		"Esc", "Powrót",
+		"↑/↓", "Navigate",
+		"d", "Delete",
+		"v", "Change view",
+		"s", "Sort",
+		"Esc", "Back",
 	)))
 
 	return lipgloss.Place(m.width, m.height,
@@ -630,7 +636,7 @@ func (m model) renderNoteDetailed(note Note) string {
 		Render(note.Title)
 
 	meta := noteMetaStyle.Render(
-		fmt.Sprintf("📅 %s │ 📊 %d słów │ 📏 %d znaków",
+		fmt.Sprintf("📅 %s │ 📊 %d words │ 📏 %d characters",
 			note.Timestamp.Format("2006-01-02 15:04:05"),
 			len(strings.Fields(note.Content)),
 			len(note.Content)))
@@ -664,17 +670,17 @@ func (m model) updateSearch(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m model) viewSearch() string {
 	var b strings.Builder
 
-	b.WriteString(renderHeader("WYSZUKIWANIE", "Znajdź swoje notatki błyskawicznie"))
+	b.WriteString(renderHeader("SEARCH", "Find your notes instantly"))
 	b.WriteString("\n")
 
 	// Search box
-	searchLabel := focusedLabelStyle.Render("🔍 Wyszukaj:")
+	searchLabel := focusedLabelStyle.Render("🔍 Search:")
 	b.WriteString(searchLabel)
 	b.WriteString("\n")
 
 	searchContent := m.searchQuery
 	if len(searchContent) == 0 {
-		searchContent = lipgloss.NewStyle().Foreground(muted).Render("Wpisz szukane słowo lub frazę...")
+		searchContent = lipgloss.NewStyle().Foreground(muted).Render("Type a search term...")
 	}
 	searchContent += getAnimatedCursor(m.animFrame)
 
@@ -689,7 +695,7 @@ func (m model) viewSearch() string {
 		resultHeader := lipgloss.NewStyle().
 			Foreground(accent).
 			Bold(true).
-			Render(fmt.Sprintf("🎯 Znaleziono: %d notatek", len(results)))
+			Render(fmt.Sprintf("🎯 Found: %d notes", len(results)))
 		b.WriteString(resultHeader)
 		b.WriteString("\n\n")
 
@@ -698,7 +704,7 @@ func (m model) viewSearch() string {
 				Width(70).
 				Align(lipgloss.Center).
 				BorderForeground(warning).
-				Render("😕 Nie znaleziono pasujących notatek\n\nSpróbuj innego zapytania")
+				Render("😕 No matching notes found\n\nTry a different search query")
 			b.WriteString(noResults)
 		} else {
 			for _, note := range results {
@@ -706,14 +712,14 @@ func (m model) viewSearch() string {
 			}
 		}
 	} else {
-		helpText := infoStyle.Render("💡 Wpisz cokolwiek aby rozpocząć wyszukiwanie\n\nWyszukiwanie obejmuje tytuły, treść i tagi")
+		helpText := infoStyle.Render("💡 Type anything to start searching\n\nSearch includes titles, content and tags")
 		helpBox := boxStyle.Width(70).Render(helpText)
 		b.WriteString(helpBox)
 	}
 
 	b.WriteString(renderFooter(renderHelp(
-		"Wpisz", "Szukaj",
-		"Esc", "Powrót",
+		"Type", "Search",
+		"Esc", "Back",
 	)))
 
 	return lipgloss.Place(m.width, m.height,
@@ -729,7 +735,7 @@ func (m model) updateStats(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m model) viewStats() string {
 	var b strings.Builder
 
-	b.WriteString(renderHeader("STATYSTYKI", "Analiza Twojego pamiętnika"))
+	b.WriteString(renderHeader("STATISTICS", "Analyze your notebook"))
 	b.WriteString("\n\n")
 
 	// Main stats
@@ -745,19 +751,19 @@ func (m model) viewStats() string {
 		statCardStyle.
 			BorderForeground(primary).
 			Render(statNumberStyle.Render(fmt.Sprintf("%d", totalNotes))+"\n"+
-				statLabelStyle.Render("📝 Notatek")),
+				statLabelStyle.Render("📝 Notes")),
 		statCardStyle.
 			BorderForeground(secondary).
 			Render(statNumberStyle.Render(fmt.Sprintf("%d", totalWords))+"\n"+
-				statLabelStyle.Render("📊 Słów")),
+				statLabelStyle.Render("📊 Words")),
 		statCardStyle.
 			BorderForeground(accent).
 			Render(statNumberStyle.Render(fmt.Sprintf("%d", totalTags))+"\n"+
-				statLabelStyle.Render("🏷️  Tagów")),
+				statLabelStyle.Render("🏷️  Tags")),
 		statCardStyle.
 			BorderForeground(success).
 			Render(statNumberStyle.Render(fmt.Sprintf("%d", avgWordsPerNote))+"\n"+
-				statLabelStyle.Render("📈 Śr. słów")),
+				statLabelStyle.Render("📈 Avg. words")),
 	)
 
 	b.WriteString(lipgloss.NewStyle().Align(lipgloss.Center).Width(80).Render(statsGrid))
@@ -769,7 +775,7 @@ func (m model) viewStats() string {
 		tagCloudTitle := lipgloss.NewStyle().
 			Foreground(accent).
 			Bold(true).
-			Render("🏷️  Najpopularniejsze tagi:")
+			Render("🏷️  Most popular tags:")
 		b.WriteString(tagCloudTitle)
 		b.WriteString("\n\n")
 
@@ -796,7 +802,7 @@ func (m model) viewStats() string {
 		recentTitle := lipgloss.NewStyle().
 			Foreground(accent).
 			Bold(true).
-			Render("📅 Ostatnia aktywność:")
+			Render("📅 Recent activity:")
 		b.WriteString(recentTitle)
 		b.WriteString("\n\n")
 
@@ -813,7 +819,7 @@ func (m model) viewStats() string {
 	}
 
 	b.WriteString(renderFooter(renderHelp(
-		"Esc", "Powrót do menu",
+		"Esc", "Back to menu",
 	)))
 
 	return lipgloss.Place(m.width, m.height,
@@ -846,20 +852,20 @@ func (m model) updateSettings(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m model) viewSettings() string {
 	var b strings.Builder
 
-	b.WriteString(renderHeader("USTAWIENIA", "Dostosuj wygląd i zachowanie"))
+	b.WriteString(renderHeader("SETTINGS", "Customize appearance and behavior"))
 	b.WriteString("\n\n")
 
 	// Settings options
 	sortModeText := map[sortMode]string{
-		sortByDate:  "Data (najnowsze)",
-		sortByTitle: "Tytuł (A-Z)",
-		sortByTags:  "Tagi",
+		sortByDate:  "Date (newest)",
+		sortByTitle: "Title (A-Z)",
+		sortByTags:  "Tags",
 	}[m.sortMode]
 
 	viewModeText := map[int]string{
-		0: "Lista (szczegółowy)",
-		1: "Siatka (kompaktowy)",
-		2: "Podgląd (pojedyncza notatka)",
+		0: "List (detailed)",
+		1: "Grid (compact)",
+		2: "Preview (single note)",
 	}[m.viewMode]
 
 	settings := []struct {
@@ -867,9 +873,9 @@ func (m model) viewSettings() string {
 		name  string
 		value string
 	}{
-		{"📊", "Sortowanie", sortModeText},
-		{"👁️ ", "Widok notatek", viewModeText},
-		{"💾", "Format pliku", ".alpaka (zaszyfrowany)"},
+		{"📊", "Sorting", sortModeText},
+		{"👁️ ", "Note view", viewModeText},
+		{"💾", "File format", ".alpaka (encrypted)"},
 	}
 
 	for i, setting := range settings {
@@ -890,13 +896,13 @@ func (m model) viewSettings() string {
 	}
 
 	b.WriteString("\n")
-	hint := infoStyle.Render("💡 Wybierz opcję aby zmienić ustawienie")
+	hint := infoStyle.Render("💡 Select an option to change the setting")
 	b.WriteString(boxStyle.Width(70).Render(hint))
 
 	b.WriteString(renderFooter(renderHelp(
-		"↑/↓", "Nawiguj",
-		"Enter/Space", "Zmień",
-		"Esc", "Powrót",
+		"↑/↓", "Navigate",
+		"Enter/Space", "Change",
+		"Esc", "Back",
 	)))
 
 	return lipgloss.Place(m.width, m.height,
